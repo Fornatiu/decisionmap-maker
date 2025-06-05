@@ -15,12 +15,10 @@ export class DecisionMapService {
 
   constructor(private http: HttpClient) {}
 
-  /** Step 0 – create blank project */
   createProject(name: string): Observable<{ id: string }> {
     return this.http.post<{ id: string }>(this.API, { projectName: name });
   }
 
-  /** Step 1 – upsert checklist selections */
   upsertQrs(
     projectId: string,
     selections: QrSelectionDto[]
@@ -29,13 +27,10 @@ export class DecisionMapService {
       selections,
     });
   }
-
-  /** Step 2 – fetch matrix (nodes + edges) */
   getMatrix(projectId: string): Observable<MatrixDto> {
     return this.http.get<MatrixDto>(`${this.API}/${projectId}/matrix`);
   }
 
-  /** Step 2 – set single cell */
   setEdge(
     projectId: string,
     payload: { fromQrId: string; toQrId: string; effect: string }
@@ -43,12 +38,10 @@ export class DecisionMapService {
     return this.http.patch<void>(`${this.API}/${projectId}/matrix`, payload);
   }
 
-  /** Step 3 – get graph for elkjs/Sprotty */
   getGraph(projectId: string): Observable<GraphDto> {
     return this.http.get<GraphDto>(`${this.API}/${projectId}/graph`);
   }
 
-  /** Dashboard helpers */
   getAllForUser(userId: string): Observable<DecisionMapDto[]> {
     return this.http.get<DecisionMapDto[]>(`${this.API}/user/${userId}`);
   }

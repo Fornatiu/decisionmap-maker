@@ -1,4 +1,4 @@
-// models/decision-map.models.ts
+
 export interface QrSelectionDto {
   qrMasterId: string;
   impactLevel: string;

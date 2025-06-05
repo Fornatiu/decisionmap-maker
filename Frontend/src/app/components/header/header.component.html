@@ -1,6 +1,6 @@
-<!-- HEADER -->
+
 <header>
-  <!-- TOP HEADER -->
+  
   <div id="top-header">
     <div class="container">
       <ul class="header-links pull-right">
@@ -13,14 +13,14 @@
       </ul>
     </div>
   </div>
-  <!-- /TOP HEADER -->
-  <!-- MAIN HEADER -->
+ 
+ 
   <div id="header">
-    <!-- container -->
+    
     <div class="container">
-      <!-- row -->
+     
       <div class="row">
-        <!-- LOGO -->
+        
         <div class="col-md-3">
           <div class="header-logo">
             <a href="#" class="logo">
@@ -28,8 +28,8 @@
             </a>
           </div>
         </div>
-        <!-- /LOGO -->
-        <!-- SEARCH BAR -->
+       
+        
         <div class="col-md-6">
           <div class="header-search">
             <form>
@@ -38,11 +38,11 @@
             </form>
           </div>
         </div>
-        <!-- /SEARCH BAR -->
-        <!-- ACCOUNT -->
+        
+       
         <div class="col-md-3 clearfix">
           <div class="header-ctn">
-            <!-- Wishlist -->
+           
             <div *ngIf="!isAuthenticated">
               <a href="#" routerLink="/login">
                 <i class="fa fa-heart-o"></i>
@@ -57,7 +57,7 @@
               </a>
             </div>
 
-            <!-- Cart -->
+           
             <div *ngIf="!isAuthenticated">
               <a href="#" routerLink="/login">
                 <i class="fa fa-shopping-cart"></i>
@@ -71,24 +71,24 @@
                 <div class="qty">{{ cartLength }}</div>
               </a>
             </div>
-            <!-- /Cart -->
-            <!-- Menu Toggle -->
+            
+           
             <div class="menu-toggle">
               <a href="#">
                 <i class="fa fa-bars"></i>
                 <span>Menu</span>
               </a>
             </div>
-            <!-- /Menu Toggle -->
+            
           </div>
         </div>
-        <!-- /ACCOUNT -->
+        
       </div>
-      <!-- /row -->
+      
     </div>
-    <!-- /container -->
+    
   </div>
-  <!-- /MAIN HEADER -->
+  
 </header>
-<!-- /HEADER -->
+
 

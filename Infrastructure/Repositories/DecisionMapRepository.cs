@@ -28,7 +28,7 @@ namespace Infrastructure.Repositories
 
         public void UpdateDecisionMapAsync(DecisionMap project)
         {
-            _context.DecisionMap.Update(project);         // staged; UoW commits
+            _context.DecisionMap.Update(project);
         }
 
 

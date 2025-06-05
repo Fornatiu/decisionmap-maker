@@ -11,7 +11,6 @@ export class QrMasterService {
 
   constructor(private http: HttpClient) {}
 
-  /** Used by checklist step */
   getAll(): Observable<QrMasterDto[]> {
     return this.http.get<QrMasterDto[]>(this.API);
   }

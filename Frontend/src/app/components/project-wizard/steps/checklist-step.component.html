@@ -1,4 +1,4 @@
-<mat-horizontal-stepper #inner>
+<!-- <mat-horizontal-stepper #inner>
   <ng-container *ngFor="let q of questions; let idx = index">
     <mat-step [stepControl]="stepCtrl(q.id)">
       <ng-template matStepLabel>Q{{ idx + 1 }}</ng-template>
@@ -24,4 +24,31 @@
       Continue
     </button>
   </mat-step>
-</mat-horizontal-stepper>
+</mat-horizontal-stepper> -->
+
+<div *ngIf="loading" class="center">
+  <mat-spinner diameter="48"></mat-spinner>
+</div>
+
+<div *ngIf="!loading">
+  <div class="dimension" *ngFor="let entry of dimGroups()">
+    <h4>{{ entry[0] }}</h4>
+
+    <mat-checkbox
+      *ngFor="let qr of entry[1]"
+      [formControl]="selections.get(qr.id)!"
+    >
+      {{ qr.name }}
+    </mat-checkbox>
+  </div>
+
+  <button
+    mat-raised-button
+    color="primary"
+    class="continue"
+    (click)="continue()"
+  >
+    Continue
+  </button>
+</div>
+

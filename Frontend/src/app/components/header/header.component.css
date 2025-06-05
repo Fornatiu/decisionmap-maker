@@ -14,16 +14,16 @@
     padding: 0;
     margin: 0;
     position: absolute;
-    top: 100%; /* Afișează submeniul sub "Home" */
+    top: 100%; 
     left: 0;
-    display: none; /* Ascunde submeniul */
-    background: #fff; /* Fundal pentru submeniu */
-    border: 1px solid #ddd; /* Opțional: bordură */
-    z-index: 1000; /* Asigură afișarea peste alte elemente */
+    display: none; 
+    background: #fff; 
+    border: 1px solid #ddd; 
+    z-index: 1000; 
 }
 
 .dropdown:hover .dropdown-menu {
-    display: block; /* Afișează submeniul la hover */
+    display: block; 
 }
 
 .dropdown-menu li {
@@ -36,49 +36,49 @@
 }
 
 .dropdown-menu li a:hover {
-    background: #f0f0f0; /* Schimbă culoarea de fundal la hover */
+    background: #f0f0f0; 
 }
 
 .menu-item {
     display: flex;
     align-items: center;
-    font-size: 16px; /* Ajustează dimensiunea textului */
-    color: #8B2E57; /* Culoarea textului */
+    font-size: 16px; 
+    color: #8B2E57;
 }
 
 .menu-icon {
     display: inline-block;
-    width: 18px; /* Lățimea totală a celor trei linii */
-    height: 14px; /* Înălțimea containerului */
+    width: 18px; 
+    height: 14px; 
     position: relative;
-    margin-right: 8px; /* Spațiu între icon și text */
+    margin-right: 8px;
 }
 
 .menu-icon::before,
 .menu-icon::after {
     content: "";
     position: absolute;
-    width: 100%; /* Lungimea completă a fiecărei linii */
-    height: 2px; /* Grosimea fiecărei linii */
-    background-color: #8B2E57; /* Culoarea liniilor */
+    width: 100%; 
+    height: 2px; 
+    background-color: #8B2E57; 
     left: 0;
 }
 
 .menu-icon::before {
-    top: 0; /* Prima linie */
+    top: 0; 
 }
 
 .menu-icon::after {
-    top: 14px; /* Ultima linie */
+    top: 14px; 
 }
 
 .menu-icon .middle-line {
     position: absolute;
-    top: 7px; /* Linia din mijloc */
+    top: 7px; 
     left: 0;
-    width: 100%; /* Lungimea completă a liniei din mijloc */
-    height: 2px; /* Grosimea liniei din mijloc */
-    background-color: #8B2E57; /* Culoarea liniei din mijloc */
+    width: 100%; 
+    height: 2px; 
+    background-color: #8B2E57; 
 }
 
 header {
@@ -91,11 +91,11 @@ header a {
 }
 
 header a:hover {
-  color: var(--text-color); /* Or any highlight color */
+  color: var(--text-color); 
 }
 
 .fa-heart-o {
-    color: var(--text-color) !important; /* Desired color specific to this component */
+    color: var(--text-color) !important;
   }
   
 .fa-shopping-cart {

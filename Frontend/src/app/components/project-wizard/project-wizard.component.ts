@@ -15,5 +15,5 @@ import { MatrixStepComponent }    from './steps/dmatrix-step.component';
   styleUrls: ['./project-wizard.component.css'],
 })
 export class ProjectWizardComponent {
-  // later inject DecisionMapService for projectId
+  // todo
 }

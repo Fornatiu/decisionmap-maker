@@ -8,7 +8,7 @@ footer {
   }
   
   footer a:hover {
-    color: var(--text-color); /* Or a different hover color */
+    color: var(--text-color); 
   }
 
   bottom-footer {

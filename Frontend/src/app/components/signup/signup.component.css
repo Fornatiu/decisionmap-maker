@@ -2,12 +2,11 @@
   width: 100vw;
   height: 100vh;
   display: flex;
-  justify-content: center;   /* horizontal */
-  align-items: center;       /* vertical   */
+  justify-content: center;   
+  align-items: center;      
   background: #f5f7fa;
 }
 
-/* 2—Dialog-like card */
 .card {
   width: 380px;
   padding: 2.5rem 2.75rem;
@@ -16,7 +15,6 @@
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
 }
 
-/* Title */
 .card h2 {
   margin: 0 0 1.5rem;
   font-size: 1.6rem;
@@ -24,26 +22,22 @@
   text-align: center;
 }
 
-/* 3—Vertical form layout */
 .signup-form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;             /* uniform gaps between items */
+  gap: 1.25rem;             
 }
 
-/* Material field full width */
 .field {
   width: 100%;
 }
 
-/* 4—Primary action button */
 .action {
   width: 100%;
   font-weight: 600;
   padding: 0.75rem 0;
 }
 
-/* 5—Link and error */
 .link {
   display: inline-block;
   margin-top: 0.5rem;

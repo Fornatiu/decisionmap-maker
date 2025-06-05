@@ -7,7 +7,6 @@ namespace Application.Queies.UserAccount
     {
         public GetAllUserAccountsQuery()
         {
-            // Constructor logic here
         }
     }
 }

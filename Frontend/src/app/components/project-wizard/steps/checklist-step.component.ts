@@ -110,7 +110,9 @@ import {
 } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { QrMasterService, DecisionMapService, QrMaster } from '../../services';
+import { QrMasterService} from '../../../services/qr-master.service';
+import { DecisionMapService } from '../../../services/decision-map.service';
+import { UpsertQrDto, QrMasterDto } from '../../../models/decision-map/decision-map.module';
 
 @Component({
   standalone: true,
@@ -134,7 +136,7 @@ export class ChecklistStepComponent implements OnInit {
   @Output() completed = new EventEmitter<void>();
 
   loading = true;
-  qrs: QrMaster[] = [];
+  qrs: QrMasterDto[] = [];
 
   // track selection in a simple form group: key = qrId, value = boolean
   selections = this.fb.group<{ [id: string]: FormControl<boolean> }>({});
@@ -165,7 +167,7 @@ export class ChecklistStepComponent implements OnInit {
       }));
 
     if (chosen.length === 0) {
-      this.completed.emit(); // nothing selected; still move on
+      this.completed.emit(); // IF nothing selected; still move on
       return;
     }
 
@@ -177,7 +179,7 @@ export class ChecklistStepComponent implements OnInit {
 
   /* helper to show dimensions as section headers */
   dimGroups() {
-    const dims: Record<string, QrMaster[]> = {};
+    const dims: Record<string, QrMasterDto[]> = {};
     this.qrs.forEach((qr) => {
       (dims[qr.dimension] ??= []).push(qr);
     });

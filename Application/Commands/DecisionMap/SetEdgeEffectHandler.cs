@@ -22,7 +22,7 @@ namespace Application.Commands.DecisionMap
                 return Result.Failure("Project not found");
 
             var r = project.SetEdge(cmd.FromQrId, cmd.ToQrId, cmd.Effect);
-            return r; // Success / Failure propagated; UoW saves if success
+            return r; 
         }
     }
 }

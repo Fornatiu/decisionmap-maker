@@ -23,7 +23,6 @@ type ViewState = 'button' | 'expanding' | 'wizard';
   styleUrls: ['./homepage.component.css'],
   animations: [
     trigger('panel', [
-      // host wrapper animates
       state(
         'button',
         style({
@@ -54,18 +53,15 @@ type ViewState = 'button' | 'expanding' | 'wizard';
   ],
 })
 export class HomeComponent {
-  // ---------- UI state ----------
   view = signal<ViewState>('button');
 
   label!: Observable<string>;
 
-  // ---------- constructor ----------
   constructor(private auth: AuthService, private router: Router) {
     this.label = this.auth.logged$.pipe(
     map(logged => (logged ? 'Create new Decision Map' : 'Log in'))
   );}
 
-  // ---------- click ----------
   onClick() {
     let isLogged = false;
     this.auth.logged$.subscribe(logged => isLogged = logged);
@@ -76,7 +72,6 @@ export class HomeComponent {
     this.view.set('expanding');
   }
 
-  // animation phase done => show wizard
   onDone(e: any) {
     if (e.toState === 'expanding') {
       this.view.set('wizard');

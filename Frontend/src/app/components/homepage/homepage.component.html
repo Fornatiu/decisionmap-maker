@@ -1,18 +1,16 @@
-<!-- src/app/home/home.component.html -->
+
 <div class="page">
   <div
     class="panel"
     [@panel]="view()"
     (@panel.done)="onDone($event)"
   >
-    <!-- big button -->
     <ng-container *ngIf="view() === 'button'">
       <button mat-raised-button color="primary" (click)="onClick()">
         {{ label | async }}
       </button>
     </ng-container>
 
-    <!-- wizard placeholder -->
     <ng-container *ngIf="view() === 'wizard'">
       <app-project-wizard></app-project-wizard>
     </ng-container>

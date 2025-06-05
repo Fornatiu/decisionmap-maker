@@ -33,7 +33,6 @@ namespace Infrastructure.Repositories
                 int randomNumber = RandomNumberGenerator.GetInt32(1000, 9999);
                 string username = $"{usernameBase}{randomNumber}";
                 userAccountInfo.Alias = username;
-                ////////////////////////////////////////////////////////////////////////////////
 
 
                 UserAccount.AddUserAccountCredentials(userAccountCredentials);
