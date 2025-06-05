@@ -1,0 +1,94 @@
+<!-- HEADER -->
+<header>
+  <!-- TOP HEADER -->
+  <div id="top-header">
+    <div class="container">
+      <ul class="header-links pull-right">
+        <li #themeToggle id="theme-toggle" class="theme-toggle">
+          <a><i class="fa fa-moon-o"></i><span id="theme-label">Dark Mode</span></a>
+        </li>
+        <li><i class="fa fa-dollar"></i> USD</li>
+        <li *ngIf="!isAuthenticated" ><a href="#" routerLink="/login"><i class="fa fa-user-o"></i> My Account</a></li>
+        <li *ngIf="isAuthenticated" ><a routerLink="/user-profile"><i class="fa fa-user-o"></i> My Account</a></li>
+      </ul>
+    </div>
+  </div>
+  <!-- /TOP HEADER -->
+  <!-- MAIN HEADER -->
+  <div id="header">
+    <!-- container -->
+    <div class="container">
+      <!-- row -->
+      <div class="row">
+        <!-- LOGO -->
+        <div class="col-md-3">
+          <div class="header-logo">
+            <a href="#" class="logo">
+              <img src="/assets/img/logo.png" alt="">
+            </a>
+          </div>
+        </div>
+        <!-- /LOGO -->
+        <!-- SEARCH BAR -->
+        <div class="col-md-6">
+          <div class="header-search">
+            <form>
+              <input class="input" placeholder="Search here">
+              <button class="search-btn">Search</button>
+            </form>
+          </div>
+        </div>
+        <!-- /SEARCH BAR -->
+        <!-- ACCOUNT -->
+        <div class="col-md-3 clearfix">
+          <div class="header-ctn">
+            <!-- Wishlist -->
+            <div *ngIf="!isAuthenticated">
+              <a href="#" routerLink="/login">
+                <i class="fa fa-heart-o"></i>
+                <span>Your Wishlist</span>
+              </a>
+            </div>
+            <div *ngIf="isAuthenticated">
+              <a routerLink="/wishlist">
+                <i class="fa fa-heart-o"></i>
+                <span>Your Wishlist</span>
+                <div class="qty">{{ wishlistLength }}</div>
+              </a>
+            </div>
+
+            <!-- Cart -->
+            <div *ngIf="!isAuthenticated">
+              <a href="#" routerLink="/login">
+                <i class="fa fa-shopping-cart"></i>
+                <span>Your Cart</span>
+              </a>
+            </div>
+            <div *ngIf="isAuthenticated">
+              <a routerLink="/cart">
+                <i class="fa fa-shopping-cart"></i>
+                <span>Your Cart</span>
+                <div class="qty">{{ cartLength }}</div>
+              </a>
+            </div>
+            <!-- /Cart -->
+            <!-- Menu Toggle -->
+            <div class="menu-toggle">
+              <a href="#">
+                <i class="fa fa-bars"></i>
+                <span>Menu</span>
+              </a>
+            </div>
+            <!-- /Menu Toggle -->
+          </div>
+        </div>
+        <!-- /ACCOUNT -->
+      </div>
+      <!-- /row -->
+    </div>
+    <!-- /container -->
+  </div>
+  <!-- /MAIN HEADER -->
+</header>
+<!-- /HEADER -->
+

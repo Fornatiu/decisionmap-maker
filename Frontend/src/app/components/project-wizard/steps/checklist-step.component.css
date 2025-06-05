@@ -1,0 +1,21 @@
+.dimension {
+  margin-bottom: 1.25rem;
+}
+.dimension h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: #555;
+}
+mat-checkbox {
+  display: block;
+  margin-left: 1rem;
+}
+.continue {
+  margin-top: 1.5rem;
+}
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}

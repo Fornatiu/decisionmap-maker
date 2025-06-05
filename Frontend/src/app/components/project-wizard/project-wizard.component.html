@@ -1,0 +1,19 @@
+<mat-vertical-stepper #outer>
+  <!-- 1 – Checklist -->
+  <mat-step [stepControl]="checklist.done">
+    <ng-template matStepLabel>Checklist</ng-template>
+    <app-checklist-step #checklist (completed)="outer.next()"></app-checklist-step>
+  </mat-step>
+
+  <!-- 2 – Graph -->
+  <mat-step>
+    <ng-template matStepLabel>Graph</ng-template>
+    <app-graph-step (completed)="outer.next()"></app-graph-step>
+  </mat-step>
+
+  <!-- 3 – Dependency Matrix -->
+  <mat-step>
+    <ng-template matStepLabel>Dependency Matrix</ng-template>
+    <app-matrix-step></app-matrix-step>
+  </mat-step>
+</mat-vertical-stepper>

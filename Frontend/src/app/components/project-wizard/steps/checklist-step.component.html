@@ -1,0 +1,27 @@
+<mat-horizontal-stepper #inner>
+  <ng-container *ngFor="let q of questions; let idx = index">
+    <mat-step [stepControl]="stepCtrl(q.id)">
+      <ng-template matStepLabel>Q{{ idx + 1 }}</ng-template>
+
+      <p class="question">{{ q.text }}</p>
+
+      <mat-checkbox
+        *ngFor="let qr of q.qrs"
+        [formControl]="fieldCtrl(q.id, qr.id)">
+        {{ qr.name }} <span class="tag">{{ qr.dimension }}</span>
+      </mat-checkbox>
+
+      <div class="actions">
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    </mat-step>
+  </ng-container>
+
+  <mat-step>
+    <ng-template matStepLabel>Review</ng-template>
+    <p>All selected, continue to Graph.</p>
+    <button mat-raised-button color="primary" (click)="finish()">
+      Continue
+    </button>
+  </mat-step>
+</mat-horizontal-stepper>

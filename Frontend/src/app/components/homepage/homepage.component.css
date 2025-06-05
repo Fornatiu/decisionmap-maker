@@ -1,0 +1,33 @@
+.page {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ffffff;
+}
+
+/* animated shell */
+.panel {
+  display: flex;          /* NEW — lets children grow           */
+  flex-direction: column; /* vertical content inside            */
+  justify-content: stretch;
+  align-items: stretch;   /* stepper gets full width            */
+
+  background: #ffffff;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.25s;
+}
+
+.panel:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* big button look */
+button[mat-raised-button] {
+  font-size: 1.5rem;
+  padding: 2.2rem 4.4rem;
+  border-radius: 1rem;
+}
