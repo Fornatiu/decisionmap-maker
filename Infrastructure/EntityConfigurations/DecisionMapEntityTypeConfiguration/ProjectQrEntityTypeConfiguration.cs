@@ -18,6 +18,10 @@ namespace Infrastructure.EntityConfigurations.ProjectQrEntityTypeConfiguration
 
             builder.HasIndex("ProjectId", nameof(ProjectQr.QrMasterId)).IsUnique();
 
+            //builder.Property(x => x.Id)
+            //       .HasDefaultValueSql("NEWID()")
+            //       .ValueGeneratedOnAdd();
+
             builder.Property(x => x.ImpactLevel)
              .HasConversion<string>()          
              .IsRequired();

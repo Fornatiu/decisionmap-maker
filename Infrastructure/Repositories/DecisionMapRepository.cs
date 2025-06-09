@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Domain.Aggregates.DecisionMapAggregate.Entities;
 using Domain.Aggregates.DecisionMapAggregate.Repositories;
-using Infrastructure.Data;                   // Your DbContext
+using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
@@ -21,9 +21,20 @@ namespace Infrastructure.Repositories
             return Task.CompletedTask;
         }
 
+        //public Task AddProjectQrAsync(ProjectQr qr)
+        //{
+        //    _context.ProjectQr.Add(qr);
+        //    return Task.CompletedTask;
+        //}
+
         public void DeleteDecisionMapAsync(DecisionMap project)
         {
-            _context.DecisionMap.Remove(project);       
+            _context.DecisionMap.Remove(project);
+        }
+
+        public void HardDeleteProjectQr(ProjectQr qr)
+        {
+            _context.Set<ProjectQr>().Remove(qr);
         }
 
         public void UpdateDecisionMapAsync(DecisionMap project)

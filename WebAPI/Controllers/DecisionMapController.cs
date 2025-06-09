@@ -20,7 +20,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> AddDecisionMap([FromBody] CreateDecisionMapCommand command)
         {
             var result = await _mediator.Send(command);
-            return result.IsSuccess ? Ok() : BadRequest(result.Error);
+            return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
         }
 
         [HttpDelete("delete/{dmId:guid}")]

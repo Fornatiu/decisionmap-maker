@@ -29,4 +29,19 @@ export class AuthService {
 
   logout() { localStorage.removeItem(this.key); this._logged$.next(false); this.router.navigate(['/']); }
   token()  { return localStorage.getItem(this.key); }
+
+  getUserIdFromToken(): string {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const payloadBase64 = token.split('.')[1]; 
+        const decodedPayload = JSON.parse(atob(payloadBase64)); 
+        return decodedPayload.nameid || ''; 
+      } catch (error) {
+        console.error('Error parsing JWT token:', error);
+        return '';
+      }
+    }
+    return '';
+  }
 }

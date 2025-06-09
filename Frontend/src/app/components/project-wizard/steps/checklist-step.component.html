@@ -26,7 +26,7 @@
   </mat-step>
 </mat-horizontal-stepper> -->
 
-<div *ngIf="loading" class="center">
+<!-- <div *ngIf="loading" class="center">
   <mat-spinner diameter="48"></mat-spinner>
 </div>
 
@@ -36,7 +36,7 @@
 
     <mat-checkbox
       *ngFor="let qr of entry[1]"
-      [formControl]="selections.get(qr.id)!"
+      [formControl]="getFormControl(qr.id)"
     >
       {{ qr.name }}
     </mat-checkbox>
@@ -50,5 +50,49 @@
   >
     Continue
   </button>
-</div>
+</div> -->
+
+<!-- LOADING STATE ---------------------------------------------------- -->
+<ng-container *ngIf="loading; else checklist">
+  <section class="loading-wrapper">
+    <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
+    <p>Loading catalogue …</p>
+  </section>
+</ng-container>
+
+<!-- REAL CONTENT ----------------------------------------------------- -->
+<ng-template #checklist>
+
+  <!-- one mat-card per sustainability dimension -->
+   <form [formGroup]="selections">
+  <mat-card *ngFor="let entry of groups" class="dim-card">
+    <mat-card-header>
+      <div mat-card-avatar class="avatar">
+        <mat-icon svgIcon="eco"></mat-icon>
+      </div>
+      <mat-card-title>{{ entry[0] }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-content>
+      <div class="qr-list">
+        <mat-checkbox
+          *ngFor="let qr of entry[1]"
+          [formControl]="getFormControl(qr.qrMasterID)">
+          {{ qr.name }}
+          <span class="chip" [ngClass]="qr.dimension">{{ qr.dimension }}</span>
+        </mat-checkbox>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>
+
+  <footer class="wizard-footer">
+    <button mat-raised-button color="primary" (click)="continue()">
+      Continue
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
+  </footer>
+</ng-template>
 

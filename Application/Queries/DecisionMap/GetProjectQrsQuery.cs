@@ -10,5 +10,5 @@ using System.Threading.Tasks;
 namespace Application.Queries.DecisionMap
 {
     public sealed record GetProjectQrsQuery(Guid ProjectId)
-    : IRequest<IReadOnlyCollection<QrSelectionDto>>, IQueryMarker;
+    : IRequest<List<QrSelectionDto>>, IQueryMarker;
 }

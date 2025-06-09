@@ -11,24 +11,29 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class DecisionMapService {
-  private readonly API = environment.SERVER_URL + '/projects';
+  private readonly API = environment.SERVER_URL + '/DecisionMap';
 
   constructor(private http: HttpClient) {}
 
-  createProject(name: string): Observable<{ id: string }> {
-    return this.http.post<{ id: string }>(this.API, { projectName: name });
+  createProject(projectName: string, ownerUserId: string): Observable<string> {
+    return this.http.post<string>(`${this.API}/add`, { ownerUserId,projectName });
   }
 
   upsertQrs(
     projectId: string,
     selections: QrSelectionDto[]
   ): Observable<void> {
-    return this.http.put<void>(`${this.API}/${projectId}/qrs`, {
+    return this.http.post<void>(`${this.API}/project`, {
+      projectId,
       selections,
     });
   }
   getMatrix(projectId: string): Observable<MatrixDto> {
     return this.http.get<MatrixDto>(`${this.API}/${projectId}/matrix`);
+  }
+
+  getProjectQrs(projectId: string): Observable<QrSelectionDto[]> {
+    return this.http.get<QrSelectionDto[]>(`${this.API}/projectget/${projectId}`);
   }
 
   setEdge(

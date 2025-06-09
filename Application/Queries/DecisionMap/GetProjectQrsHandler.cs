@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 namespace Application.Queries.DecisionMap
 {
     public sealed class GetProjectQrsHandler
-    : IRequestHandler<GetProjectQrsQuery, IReadOnlyCollection<QrSelectionDto>>
+    : IRequestHandler<GetProjectQrsQuery,List<QrSelectionDto>>
     {
         private readonly IDecisionMapRepository _repo;
         public GetProjectQrsHandler(IDecisionMapRepository repo) => _repo = repo;
 
-        public async Task<IReadOnlyCollection<QrSelectionDto>> Handle(GetProjectQrsQuery q, CancellationToken ct)
+        public async Task<List<QrSelectionDto>> Handle(GetProjectQrsQuery q, CancellationToken ct)
         {
             var p = await _repo.GetDecisionMapByIdAsync(q.ProjectId);
             return p.SelectedQrs

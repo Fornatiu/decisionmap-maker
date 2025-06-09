@@ -27,28 +27,21 @@ namespace Domain.Aggregates.DecisionMapAggregate.Entities
             var qr = new ProjectQr(qrMasterId, impact, dim);
             SelectedQrs.Add(qr);
 
-            // create empty edges from/to this new node
-            foreach (var other in SelectedQrs.Where(q => q != qr))
-            {
-                DMatrix.Add(new DependencyEdge(qr.Id, other.Id, EdgeEffect.Undefined));
-                DMatrix.Add(new DependencyEdge(other.Id, qr.Id, EdgeEffect.Undefined));
-            }
-
             //AddDomainEvent(new QrAddedDomainEvent(Id, qrMasterId));
             return Result.Success(qr);
         }
 
-        public Result RemoveQr(Guid qrMasterId)
+        public Result<ProjectQr> RemoveQr(Guid qrMasterId)
         {
             var qr = SelectedQrs.SingleOrDefault(q => q.QrMasterId == qrMasterId);
             if (qr is null)
-                return Result.Failure("QR not found.");
+                return Result.Failure<ProjectQr>("QR not found.");
 
             SelectedQrs.Remove(qr);
             DMatrix.RemoveAll(e => e.FromQrId == qr.Id || e.ToQrId == qr.Id);
 
             //AddDomainEvent(new QrRemovedDomainEvent(Id, qrMasterId));
-            return Result.Success();
+            return Result.Success (qr);
         }
 
         public Result SetEdge(Guid fromQrId, Guid toQrId, EdgeEffect effect)

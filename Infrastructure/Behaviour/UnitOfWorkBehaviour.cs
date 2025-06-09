@@ -30,7 +30,7 @@ namespace Infrastructure.Behaviors
 
             try
             {
-                var response = await next();         // handler
+                var response = await next();   // handler
                 await _db.SaveChangesAsync(ct);       
                 await tx.CommitAsync(ct);
                 return response;

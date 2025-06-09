@@ -30,7 +30,7 @@ export interface DecisionMapDto {
 
 // models/qr-master.models.ts
 export interface QrMasterDto {
-  id: string;
+  qrMasterID: string;
   name: string;
   dimension: string;
 }
@@ -38,4 +38,5 @@ export interface QrMasterDto {
 export interface UpsertQrDto {
   qrMasterId: string;
   impactLevel: 'Immediate' | 'Enabling' | 'Systemic';
+  dimension: 'Tech | Econ | Social | Env';
 }

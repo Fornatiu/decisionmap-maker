@@ -7,7 +7,7 @@ import { QrMasterDto } from '../models/decision-map/decision-map.module';
 
 @Injectable({ providedIn: 'root' })
 export class QrMasterService {
-  private readonly API = environment.SERVER_URL + '/qrs';
+  private readonly API = environment.SERVER_URL + '/QrMaster/get';
 
   constructor(private http: HttpClient) {}
 

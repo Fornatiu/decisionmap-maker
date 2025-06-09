@@ -1,188 +1,187 @@
-// import { Component, EventEmitter, Output } from '@angular/core';
-// import { CommonModule } from '@angular/common';
-// import { MatStepperModule } from '@angular/material/stepper';
-// import { MatCheckboxModule } from '@angular/material/checkbox';
-// import { MatButtonModule } from '@angular/material/button';
-// import { AbstractControl, FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
-// import { Question } from '../models';
-
-// @Component({
-//   standalone: true,
-//   selector: 'app-checklist-step',
-//   imports: [
-//     CommonModule,
-//     ReactiveFormsModule,
-//     MatStepperModule,
-//     MatCheckboxModule,
-//     MatButtonModule,
-//   ],
-//   templateUrl: './checklist-step.component.html',
-//   styleUrls: ['./checklist-step.component.css'],
-// })
-// export class ChecklistStepComponent {
-//   @Output() completed = new EventEmitter<void>();
-
-//   fb: FormBuilder = new FormBuilder();
-
-//   /** Fake data until we call QrMasterService */
-//   questions: Question[] = [
-//     {
-//       id: 'q1',
-//       text: 'Question 1 – Does the project address …?',
-//       qrs: [
-//         { id: 'qr1', name: 'Performance', dimension: 'Tech' },
-//         { id: 'qr2', name: 'Maintainability', dimension: 'Tech' },
-//       ],
-//     },
-//     {
-//       id: 'q2',
-//       text: 'Question 2 – Which economic aspects …?',
-//       qrs: [
-//         { id: 'qr3', name: 'Development Cost', dimension: 'Econ' },
-//         { id: 'qr4', name: 'Licensing Fees',   dimension: 'Econ' },
-//       ],
-//     },
-//     {
-//       id: 'q3',
-//       text: 'Question 3 – Social / environmental …?',
-//       qrs: [
-//         { id: 'qr5', name: 'Accessibility', dimension: 'Soc' },
-//         { id: 'qr6', name: 'Energy Usage',  dimension: 'Env' },
-//       ],
-//     },
-//   ];
-
-//   /** track selections per question */
-//   selections = this.fb.group(
-//     Object.fromEntries(
-//       this.questions.map((q) => [
-//         q.id,
-//         this.fb.group(
-//           Object.fromEntries(q.qrs.map((qr) => [qr.id, false]))
-//         ),
-//       ])
-//     )
-//   );
-
-//   constructor(fb: FormBuilder) { this.fb = fb; }
-
-//   done = this.fb.control(false);
-
-//   finish() {
-//     // gather selected QRs
-//     const raw = this.selections.value;
-//     const chosenIds = Object.values(raw)
-//       .flatMap((g: any) =>
-//         Object.entries(g)
-//           .filter(([_, v]) => v)
-//           .map(([id]) => id)
-//       );
-
-//     console.log('Selected QRs:', chosenIds);
-//     // TODO: call DecisionMapService.upsertQrs(projectId, chosenIds)
-
-//     this.completed.emit();
-//   }
-
-//    fieldCtrl(qId: string, qrId: string): FormControl {
-//   return this.selections.get(qId)!.get(qrId)! as FormControl;
-//   }
-
-//     stepCtrl(qId: string): AbstractControl {
-//   return this.selections.get(qId)!;          // for [stepControl]
-//   }
-  
-// }
-
-
 import {
   Component,
   EventEmitter,
+  Input,
+  OnChanges,
   OnInit,
   Output,
   inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, FormControl } from '@angular/forms';
 import {
-  MatCheckboxModule,
-  MatCheckboxChange,
-} from '@angular/material/checkbox';
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { QrMasterService} from '../../../services/qr-master.service';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
+import { forkJoin, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { QrMasterService } from '../../../services/qr-master.service';
 import { DecisionMapService } from '../../../services/decision-map.service';
-import { UpsertQrDto, QrMasterDto } from '../../../models/decision-map/decision-map.module';
+import {
+  UpsertQrDto,
+  QrMasterDto,
+  QrSelectionDto,
+} from '../../../models/decision-map/decision-map.module';
 
 @Component({
-  standalone: true,
   selector: 'app-checklist-step',
+  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
     MatCheckboxModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    MatProgressBarModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatCardModule,
+    MatDividerModule,
   ],
   templateUrl: './checklist-step.component.html',
   styleUrls: ['./checklist-step.component.css'],
 })
-export class ChecklistStepComponent implements OnInit {
+export class ChecklistStepComponent implements OnInit, OnChanges {
+  /* -----------------  DI  ----------------- */
   private qrSvc = inject(QrMasterService);
   private dmSvc = inject(DecisionMapService);
   private fb = inject(FormBuilder);
 
-  /** emits when successfully saved */
+  /* -----------------  Inputs / Outputs  ----------------- */
+  /** emit when the step can advance */
   @Output() completed = new EventEmitter<void>();
 
+  /** allow the wizard to pass the real project id */
+  @Input({ required: true }) projectId!: string;
+
+  /* -----------------  State  ----------------- */
   loading = true;
+  /** master catalogue grouped by dimension */
   qrs: QrMasterDto[] = [];
+  /** ids already attached to the project */
+  private projectQrIds = new Set<string>();
 
-  // track selection in a simple form group: key = qrId, value = boolean
-  selections = this.fb.group<{ [id: string]: FormControl<boolean> }>({});
+  groups: Array<[string, QrMasterDto[]]> = [];
 
-  /** fake projectId for demo – pass it in via @Input in real wizard */
-  projectId = '00000000-0000-0000-0000-000000000001';
+  /** checkbox model: key = qrId, value = boolean */
+  selections = this.fb.group<{ [id: string]: FormControl<boolean | null> }>({});
 
-  ngOnInit() {
-    this.qrSvc.getAll().subscribe({
-      next: (list) => {
-        this.qrs = list;
-        const cfg: Record<string, FormControl<boolean>> = {};
-        list.forEach((qr) => (cfg[qr.id] = this.fb.control(false)));
-        this.selections = this.fb.group(cfg);
+  /* -----------------  Lifecycle  ----------------- */
+
+  ngOnChanges() {
+    if (this.projectId) {
+      this.load();
+    }
+  }
+
+  private load() {
+    forkJoin({
+      masters: this.qrSvc.getAll(),
+      projectQrs: this.dmSvc.getProjectQrs(this.projectId).pipe(
+        // if the project is new, server might return 404/empty → convert to []
+        catchError(() => of([] as QrSelectionDto[]))
+      ),
+    }).subscribe({
+      next: ({ masters, projectQrs }) => {
+        console.log('Masters loaded:', masters);
+        this.qrs = masters;
+        this.projectQrIds = new Set(projectQrs.map((p) => p.qrMasterId));
+
+        /* build checkbox form with proper defaults */
+        const cfg: Record<string, FormControl<boolean | null>> = {};
+        masters.forEach((qr) => {
+          cfg[qr.qrMasterID] = this.fb.control(this.projectQrIds.has(qr.qrMasterID), {
+            nonNullable: true,
+          });
+        });
+        
+        console.log('Checkbox config:', cfg);
+
+        if (this.selections) {
+          // first reset, then add controls
+          this.selections.reset();
+          Object.entries(cfg).forEach(([key, ctrl]) =>
+            this.selections.setControl(key, ctrl)
+          );
+        } else {
+          this.selections = this.fb.group(cfg);
+        }
+
+        this.groups = this.buildGroups(masters);
+
         this.loading = false;
       },
-      error: () => (this.loading = false),
+      error: (err) => {
+        console.error('Checklist init failed', err);
+        this.loading = false;
+      },
     });
   }
 
-  /** save & advance */
-  continue() {
-    const chosen: UpsertQrDto[] = Object.entries(this.selections.value)
-      .filter(([_, checked]) => checked)
-      .map(([qrId]) => ({
-        qrMasterId: qrId,
-        impactLevel: 'Immediate' as const, // default; will adjust in Graph step
-      }));
+  ngOnInit() {
+  }
 
-    if (chosen.length === 0) {
-      this.completed.emit(); // IF nothing selected; still move on
+  /* -----------------  UI helper  ----------------- */
+  /** dimension → list of qrs (for *ngFor) */
+  private buildGroups(list: QrMasterDto[]) {
+    const byDim: Record<string, QrMasterDto[]> = {};
+    list.forEach((qr) => (byDim[qr.dimension] ??= []).push(qr));
+    return Object.entries(byDim);
+  }
+
+  /* -----------------  Continue logic  ----------------- */
+  /**
+   * → 1. build a list of *currently* checked ids
+   * → 2. compare with what the project already had
+   * → 3. only send (additions ∪ removals) to backend
+   * → 4. emit `completed` when done
+   */
+  continue() {
+    console.log('raw form value', this.selections.value);
+    console.log('getRawValue()', this.selections.getRawValue());
+    // 1) build an array of currently checked master IDs
+    const nowCheckedIds = Object.entries(this.selections.value)
+      .filter(([_, checked]) => checked === true)
+      .map(([id]) => id);
+
+    console.log('checked ids', nowCheckedIds);
+
+    // 2) nothing changed? just move on
+    if (nowCheckedIds.length === 0) {
+      console.log('No QR selections changed, moving on');
+      this.completed.emit();
       return;
     }
 
-    this.dmSvc.upsertQrs(this.projectId, chosen).subscribe({
+    // 3) build the full payload: find the matching master and pluck its dimension
+    const payload: UpsertQrDto[] = nowCheckedIds.map((qrMasterId) => {
+      const master = this.qrs.find((q) => q.qrMasterID === qrMasterId)!;
+      return {
+        qrMasterId: master.qrMasterID,
+        impactLevel: 'Immediate',
+        dimension: master.dimension as 'Tech | Econ | Social | Env',
+      };
+    });
+
+    // 4) send it up
+    this.dmSvc.upsertQrs(this.projectId, payload).subscribe({
       next: () => this.completed.emit(),
-      error: (err) => console.error(err),
+      error: (err) => console.error('Upsert failed', err),
     });
   }
 
-  /* helper to show dimensions as section headers */
-  dimGroups() {
-    const dims: Record<string, QrMasterDto[]> = {};
-    this.qrs.forEach((qr) => {
-      (dims[qr.dimension] ??= []).push(qr);
-    });
-    return Object.entries(dims);
-  }
+  getFormControl(id: string): FormControl<boolean> {
+  const ctrl = this.selections.get(id);
+  if (!ctrl) console.warn('Missing control for', id);
+  return ctrl as FormControl<boolean>;
+}
 }
