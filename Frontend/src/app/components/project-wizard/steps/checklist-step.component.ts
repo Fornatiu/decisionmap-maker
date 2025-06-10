@@ -22,6 +22,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatRadioModule } from '@angular/material/radio';
 import { forkJoin, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { QrMasterService } from '../../../services/qr-master.service';
@@ -31,6 +32,12 @@ import {
   QrMasterDto,
   QrSelectionDto,
 } from '../../../models/decision-map/decision-map.module';
+
+type Impact = 'Immediate' | 'Enabling' | 'Systemic';
+interface QrControls {
+  checked: FormControl<boolean>;
+  impact: FormControl<Impact>;
+}
 
 @Component({
   selector: 'app-checklist-step',
@@ -42,6 +49,7 @@ import {
     MatButtonModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
+    MatRadioModule,
     MatIconModule,
     MatTooltipModule,
     MatCardModule,
@@ -73,7 +81,7 @@ export class ChecklistStepComponent implements OnInit, OnChanges {
   groups: Array<[string, QrMasterDto[]]> = [];
 
   /** checkbox model: key = qrId, value = boolean */
-  selections = this.fb.group<{ [id: string]: FormControl<boolean | null> }>({});
+  selections!: FormGroup<Record<string, FormGroup<QrControls>>>;
 
   /* -----------------  Lifecycle  ----------------- */
 
@@ -97,13 +105,16 @@ export class ChecklistStepComponent implements OnInit, OnChanges {
         this.projectQrIds = new Set(projectQrs.map((p) => p.qrMasterId));
 
         /* build checkbox form with proper defaults */
-        const cfg: Record<string, FormControl<boolean | null>> = {};
+        const cfg: Record<string, FormGroup<QrControls>> = {};
         masters.forEach((qr) => {
-          cfg[qr.qrMasterID] = this.fb.control(this.projectQrIds.has(qr.qrMasterID), {
-            nonNullable: true,
+          cfg[qr.qrMasterID] = this.fb.group<QrControls>({
+            checked: this.fb.control(this.projectQrIds.has(qr.qrMasterID), {
+              nonNullable: true,
+            }),
+            impact: this.fb.control<Impact>('Immediate', { nonNullable: true }),
           });
         });
-        
+
         console.log('Checkbox config:', cfg);
 
         if (this.selections) {
@@ -118,7 +129,7 @@ export class ChecklistStepComponent implements OnInit, OnChanges {
 
         this.groups = this.buildGroups(masters);
 
-        this.loading = false;
+        setTimeout(() => (this.loading = false), 600); // simulate loading delay
       },
       error: (err) => {
         console.error('Checklist init failed', err);
@@ -127,8 +138,7 @@ export class ChecklistStepComponent implements OnInit, OnChanges {
     });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   /* -----------------  UI helper  ----------------- */
   /** dimension → list of qrs (for *ngFor) */
@@ -149,8 +159,8 @@ export class ChecklistStepComponent implements OnInit, OnChanges {
     console.log('raw form value', this.selections.value);
     console.log('getRawValue()', this.selections.getRawValue());
     // 1) build an array of currently checked master IDs
-    const nowCheckedIds = Object.entries(this.selections.value)
-      .filter(([_, checked]) => checked === true)
+    const nowCheckedIds = Object.entries(this.selections.getRawValue())
+      .filter(([, v]) => v.checked)
       .map(([id]) => id);
 
     console.log('checked ids', nowCheckedIds);
@@ -162,12 +172,15 @@ export class ChecklistStepComponent implements OnInit, OnChanges {
       return;
     }
 
+    const raw = this.selections.getRawValue();
+
     // 3) build the full payload: find the matching master and pluck its dimension
     const payload: UpsertQrDto[] = nowCheckedIds.map((qrMasterId) => {
       const master = this.qrs.find((q) => q.qrMasterID === qrMasterId)!;
+      const impact  = raw[qrMasterId].impact;
       return {
         qrMasterId: master.qrMasterID,
-        impactLevel: 'Immediate',
+        impactLevel: impact,   
         dimension: master.dimension as 'Tech | Econ | Social | Env',
       };
     });
@@ -179,9 +192,16 @@ export class ChecklistStepComponent implements OnInit, OnChanges {
     });
   }
 
-  getFormControl(id: string): FormControl<boolean> {
-  const ctrl = this.selections.get(id);
-  if (!ctrl) console.warn('Missing control for', id);
-  return ctrl as FormControl<boolean>;
+  getFormGroup(id: string): FormGroup<QrControls> {
+  const grp = this.selections.get(id) as FormGroup<QrControls> | null;
+  if (!grp) {
+    console.warn('Missing control group for', id);
+    // create a dummy disabled group to avoid template null-errors
+    return this.fb.group<QrControls>({
+      checked: this.fb.control(false, {nonNullable:true}),
+      impact : this.fb.control('Immediate', {nonNullable:true})
+    });
+  }
+  return grp;
 }
 }

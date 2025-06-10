@@ -1,24 +1,3 @@
-/* .dimension {
-  margin-bottom: 1.25rem;
-}
-.dimension h4 {
-  margin: 0 0 0.5rem;
-  font-size: 1rem;
-  color: #555;
-}
-mat-checkbox {
-  display: block;
-  margin-left: 1rem;
-}
-.continue {
-  margin-top: 1.5rem;
-}
-.center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
-} */
 
 
 /* ---------- loading ---------- */
@@ -52,10 +31,9 @@ mat-checkbox {
 }
 
 mat-checkbox {
-  --mdc-checkbox-margin: 0;   /* remove excessive space */
+  --mdc-checkbox-margin: 0;   
 }
 
-/* ---------- chip style ---------- */
 .chip {
   font-size: .75rem;
   margin-left: .5rem;
@@ -68,7 +46,13 @@ mat-checkbox {
 .chip.Social  { background:#8BC34A; }
 .chip.Env     { background:#9C27B0; }
 
-/* ---------- footer ---------- */
+.impact-group {
+  gap: 4rem;
+  margin-left: 4rem;   
+  margin-top: .25rem;
+}
+
+
 .wizard-footer {
   position: sticky;
   bottom: 0;
@@ -78,3 +62,4 @@ mat-checkbox {
   justify-content: flex-end;
   border-top: 1px solid #e0e0e0;
 }
+

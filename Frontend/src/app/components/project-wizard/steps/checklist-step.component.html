@@ -62,31 +62,42 @@
 
 <!-- REAL CONTENT ----------------------------------------------------- -->
 <ng-template #checklist>
-
   <!-- one mat-card per sustainability dimension -->
-   <form [formGroup]="selections">
-  <mat-card *ngFor="let entry of groups" class="dim-card">
-    <mat-card-header>
-      <div mat-card-avatar class="avatar">
-        <mat-icon svgIcon="eco"></mat-icon>
-      </div>
-      <mat-card-title>{{ entry[0] }}</mat-card-title>
-    </mat-card-header>
+  <form [formGroup]="selections">
+    <mat-card *ngFor="let entry of groups" class="dim-card">
+      <mat-card-header>
+        <div mat-card-avatar class="avatar">
+          <mat-icon svgIcon="eco"></mat-icon>
+        </div>
+        <mat-card-title>{{ entry[0] }}</mat-card-title>
+      </mat-card-header>
 
-    <mat-divider></mat-divider>
+      <mat-divider></mat-divider>
 
-    <mat-card-content>
-      <div class="qr-list">
-        <mat-checkbox
-          *ngFor="let qr of entry[1]"
-          [formControl]="getFormControl(qr.qrMasterID)">
-          {{ qr.name }}
-          <span class="chip" [ngClass]="qr.dimension">{{ qr.dimension }}</span>
-        </mat-checkbox>
-      </div>
-    </mat-card-content>
-  </mat-card>
-</form>
+      <mat-card-content>
+        <div class="qr-list">
+          <mat-checkbox
+            *ngFor="let qr of entry[1]"
+             [formControl]="getFormGroup(qr.qrMasterID).controls.checked"
+          >
+            {{ qr.name }}
+            <span class="chip" [ngClass]="qr.dimension">{{
+              qr.dimension
+            }}</span>
+            <mat-radio-group
+              class="impact-group"
+              [formControl]="getFormGroup(qr.qrMasterID).controls.impact"
+              aria-label="Impact level"
+            >
+              <mat-radio-button value="Immediate">Immediate</mat-radio-button>
+              <mat-radio-button value="Enabling">Enabling</mat-radio-button>
+              <mat-radio-button value="Systemic">Systemic</mat-radio-button>
+            </mat-radio-group>
+          </mat-checkbox>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </form>
 
   <footer class="wizard-footer">
     <button mat-raised-button color="primary" (click)="continue()">
@@ -95,4 +106,3 @@
     </button>
   </footer>
 </ng-template>
-

@@ -1,1 +1,1 @@
-# Algoholics project
+# DecisionMapMaker project
